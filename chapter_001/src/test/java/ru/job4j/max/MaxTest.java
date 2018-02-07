@@ -17,13 +17,16 @@ import static org.junit.Assert.assertThat;
         }
 
 		
-		
-		  @Test
+	  @Test
         public void whenSecondLessFirst() {
             Max maxim = new Max();
-            int result = maxim.max(-5, -1);
-            assertThat(result, is(-1));
+            int result = maxim.max(-5, -1, 10);
+            assertThat(result, is(10));
         }
+		
+	
+		
+		
 		
     }
 

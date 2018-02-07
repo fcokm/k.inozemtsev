@@ -13,17 +13,48 @@ package ru.job4j.max;
 	 
 	    public class Max {
 
-        /**
-         *  Метод возвращает максимальное число. 
-         *
-         * @param first первое число.
-		 * @param second второе число.
+    
+		
+		/**
+         *  Метод возвращает максимальное число  
+         * из двух чисел
+		 *
+         * @param first первое число
+		 * @param second второе число
          * @return максимальное число.
          */
-            public int max(int first, int second) {
+		
+	    public  int max(int first, int second) {
+            int c = first - second;
+            int k = (c >> 31) & 0x1;
 
-            return first > second ? first : second;
+            return first - k * c;
         }
+
+		
+		
+		/**
+         *  Метод возвращает максимальное число 
+		 *   из трех чисел 
+         *
+         * @param first первое число
+		 * @param second второе число
+		 * @param third третье число
+         * @return максимальное число.
+         */
+		
+		
+       public  int max(int first, int second, int third) {
+            int tmp = max(first, second);
+            int max = max(tmp, third);
+
+            return max;
+        }
+		
+		
+		
+		
+		
     }
 	
 	
