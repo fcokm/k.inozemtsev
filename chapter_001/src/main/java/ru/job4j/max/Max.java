@@ -45,17 +45,10 @@ package ru.job4j.max;
 		
 		
        public  int max(int first, int second, int third) {
-            int tmp = max(first, second);
-            int max = max(tmp, third);
-
-            return max;
+             return  max(max(first, second), third);
         }
 		
-		
-		
-		
-		
-    }
+   }
 	
 	
 	
