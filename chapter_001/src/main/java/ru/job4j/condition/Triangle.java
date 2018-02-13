@@ -10,7 +10,7 @@ package ru.job4j.condition;
      */
 	 
 	 
-    public class Triangle {
+     public class Triangle {
 
         private Point a;
         private Point b;
@@ -34,7 +34,6 @@ package ru.job4j.condition;
          * @param bc расстояние между точками b c
          * @return Перимент.
          */
-		 
         public double period(double ab, double ac, double bc) {
 
             return (ab + ac + bc) / 2;
@@ -69,13 +68,8 @@ package ru.job4j.condition;
          * @param bc Длина от точки b c.
          * @return true or false.
          */
-		 
         private boolean exist(double ab, double ac, double bc) {
-            if ((ab + ac >= bc) || (ab + bc >= ac) || (bc + ac >= ab)) {
-                return true;
-            }
-
-            return false;
+            return (ab + ac >= bc) || (ab + bc >= ac) || (bc + ac >= ab);
         }
-
+		
     }
