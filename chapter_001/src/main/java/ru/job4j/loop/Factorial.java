@@ -21,18 +21,14 @@ package ru.job4j.loop;
          * @return факториал числа.
          */
 
+		 
+		 
+		 
         public int calc(int number) {
 
-            if (number < 0) {
-                return -1;
-            }
-            if (number == 0) {
-                return 1;
-            }
             int fact = 1;
-            for (int i = 2; i <= number; i++) {
+            for (int i = 1; i <= number; i++) {
                 fact *= i;
-                System.out.print(fact + " ");
 
             }
             return fact;
