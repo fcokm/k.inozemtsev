@@ -47,16 +47,12 @@ public class Tracker {
 
 
     public void replace(String id, Item item) {
-
-        for (int index = 0; index < this.items.length; index++) {
-
+        for (int index = 0; index < position; index++) {
             if (this.items[index].getId().equals(id)) {
                 this.items[index] = item;
                 break;
             }
-
         }
-
     }
 
 
@@ -67,10 +63,11 @@ public class Tracker {
      */
 
     public void delete(String id) {
-        for (int index = 0; index < this.items.length; index++) {
+        for (int index = 0; index < position; index++) {
             if (this.items[index] != null && this.items[index].getId().equals(id)) {
                 System.arraycopy(this.items, index + 1, this.items, index, this.items.length - 1 - index);
                 this.items[this.items.length - 1] = null;
+                break;
             }
         }
     }
@@ -84,7 +81,7 @@ public class Tracker {
     Item[] findByName(String key) {
         Item[] result = new Item[this.items.length];
         int count = 0;
-        for (int index = 0; index < this.items.length; index++) {
+        for (int index = 0; index < position; index++) {
             if (this.items[index] != null && this.items[index].getName().equals(key)) {
                 result[count++] = this.items[index];
             }
@@ -101,14 +98,13 @@ public class Tracker {
      */
 
     public Item findById(String id) {
-
-        for (int index = 0; index < this.items.length; index++) {
-
+        int index;
+        for (index = 0; index < position; index++) {
             if (this.items[index] != null && this.items[index].getId().equals(id)) {
-                return this.items[index];
+                break;
             }
         }
-        return null;
+        return this.items[index] == null ? null : this.items[index];
     }
 
 
@@ -119,9 +115,8 @@ public class Tracker {
      */
 
     public Item[] getAll() {
-
         int count = 0;
-        for (int index = 0; index < this.items.length; index++) {
+        for (int index = 0; index < position; index++) {
             if (this.items[index] != null) {
                 count++;
             }
@@ -137,9 +132,14 @@ public class Tracker {
      *
      * @return id Уникальный ключ.
      */
+
+
     private String generateId() {
-        String id = Integer.toString(new Random(System.nanoTime()).nextInt(100) + 1);
-        return this.findById(id) == null ? id : this.generateId();
+        String id = " ";
+        do {
+            id = Integer.toString(new Random(System.nanoTime()).nextInt(100) + 1);
+        } while (this.findById(id) != null);
+        return id;
     }
 
 
