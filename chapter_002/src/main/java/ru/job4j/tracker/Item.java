@@ -52,6 +52,31 @@ public class Item {
     }
 
     /**
+     * Конструктор - создание нового объекта с параметрами
+     *
+     * @param name       - имя
+     * @param desc - описание заявки
+     */
+
+    public Item(String name, String desc) {
+        this.name = name;
+        this.desc = desc;
+    }
+
+    /**
+     * Конструктор - создание нового объекта с параметрами
+     *
+     * @param name       - имя
+     * @param desc - описание заявки
+     */
+
+    public Item(String id, String name, String desc) {
+        this.id = id;
+        this.name = name;
+        this.desc = desc;
+    }
+
+    /**
      * Метод получения значения поля id
      * @return id
      */

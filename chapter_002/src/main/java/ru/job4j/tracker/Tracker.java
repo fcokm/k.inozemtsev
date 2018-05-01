@@ -1,7 +1,9 @@
 package ru.job4j.tracker;
 
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -14,15 +16,14 @@ import java.util.Random;
 
 public class Tracker {
     /**
-     * Массив для хранение заявок.
+     * Список для хранение заявок.
      */
-    private final Item[] items = new Item[100];
+    List<Item> itemList = new ArrayList<>();
 
     /**
      * Указатель ячейки для новой заявки.
      */
     private int position = 0;
-
 
     /**
      * Метод реализаущий добавление заявки в хранилище
@@ -30,13 +31,11 @@ public class Tracker {
      * @param item новая заявка
      * @return Item заявка.
      */
-
     public Item add(Item item) {
         item.setId(this.generateId());
-        this.items[this.position++] = item;
+        this.itemList.add(item);
         return item;
     }
-
 
     /**
      * Метод реализует редактирование заявки в хранилище
@@ -44,29 +43,24 @@ public class Tracker {
      * @param id   идентификатор заявки
      * @param item новая заявка.
      */
-
-
     public void replace(String id, Item item) {
-        for (int index = 0; index < position; index++) {
-            if (this.items[index].getId().equals(id)) {
-                this.items[index] = item;
+        for (Item it : this.itemList) {
+            if (it.getId().equals(id)) {
+                this.itemList.add(item);
                 break;
             }
         }
     }
-
 
     /**
      * Метод удаляет заявку
      *
      * @param id идентификатор заявки
      */
-
     public void delete(String id) {
-        for (int index = 0; index < position; index++) {
-            if (this.items[index] != null && this.items[index].getId().equals(id)) {
-                System.arraycopy(this.items, index + 1, this.items, index, this.items.length - 1 - index);
-                this.items[this.items.length - 1] = null;
+        for (Item item : this.itemList) {
+            if (item.getId().equals(id)) {
+                this.itemList.remove(item);
                 break;
             }
         }
@@ -74,19 +68,16 @@ public class Tracker {
 
     /**
      * Метод возвращает список заявок по имени
-     *
-     * @return result массив заявок.
+     * @return result список заявок.
      */
-
-    Item[] findByName(String key) {
-        Item[] result = new Item[this.items.length];
-        int count = 0;
-        for (int index = 0; index < position; index++) {
-            if (this.items[index] != null && this.items[index].getName().equals(key)) {
-                result[count++] = this.items[index];
+    List<Item> findByName(String key) {
+        List<Item> items = new ArrayList<>();
+        for (Item item : this.itemList) {
+            if (item.getName().equals(key)) {
+                items.add(item);
             }
         }
-        return Arrays.copyOf(result, count);
+        return items;
     }
 
 
@@ -98,42 +89,29 @@ public class Tracker {
      */
 
     public Item findById(String id) {
-        int index;
-        for (index = 0; index < position; index++) {
-            if (this.items[index] != null && this.items[index].getId().equals(id)) {
-                break;
+        Item item = new Item();
+        for (Item it : this.itemList) {
+            if (it.getId().equals(id)) {
+                item = it;
             }
         }
-        return this.items[index] == null ? null : this.items[index];
+        return item;
     }
 
 
     /**
      * Метод возвращает список всех заявок
-     *
-     * @return copyItem массив заявок.
+     * @return список заявок.
      */
-
-    public Item[] getAll() {
-        int count = 0;
-        for (int index = 0; index < position; index++) {
-            if (this.items[index] != null) {
-                count++;
-            }
-        }
-        Item[] copyItem = new Item[count];
-        System.arraycopy(this.items, 0, copyItem, 0, count);
-        return copyItem;
+    public List<Item> getAll() {
+        return this.itemList;
     }
-
 
     /**
      * Метод генерирует уникальный ключ для заявки.
      *
      * @return id Уникальный ключ.
      */
-
-
     private String generateId() {
         String id = " ";
         do {

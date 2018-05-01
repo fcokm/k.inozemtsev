@@ -2,6 +2,12 @@ package ru.job4j.tracker;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.collection.IsArrayContainingInAnyOrder.arrayContainingInAnyOrder;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNull;
@@ -16,7 +22,7 @@ public class TrackerTest {
         Tracker tracker = new Tracker();
         Item item = new Item("test1", "testDescription", 123L);
         tracker.add(item);
-        assertThat(tracker.getAll()[0], is(item));
+        assertThat(tracker.getAll().get(0), is(item));
     }
 
 
@@ -35,6 +41,7 @@ public class TrackerTest {
     @Test
     public void whenDeleteFirstItemThenReturnArraysItem() {
         Tracker tracker = new Tracker();
+        List<Item> exceptItems = new ArrayList<>();
         Item first = new Item("test1", "testDescription", 123L);
         tracker.add(first);
         Item second = new Item("test2", "testDescription2", 124L);
@@ -42,9 +49,11 @@ public class TrackerTest {
         Item third = new Item("test3", "testDescription3", 125L);
         tracker.add(third);
         tracker.delete(first.getId());
-        Item[] except = {second, third};
-        Item[] result = tracker.getAll();
-        assertThat(result, arrayContainingInAnyOrder(except));
+        exceptItems.add(second);
+        exceptItems.add(third);
+        List<Item> result = tracker.getAll();
+        assertThat(result, contains(second, third));
+        //assertThat(result, arrayContainingInAnyOrder(exceptItems));
 
     }
 
@@ -60,9 +69,11 @@ public class TrackerTest {
         tracker.add(third);
         Item four = new Item("test1", "testDescription4", 126L);
         tracker.add(four);
-        Item[] result = tracker.findByName(first.getName());
-        Item[] except = {first, four};
-        assertThat(result, arrayContainingInAnyOrder(except));
+        List<Item> result = tracker.findByName("test1");
+        //Item[] except = {first, four};
+        List<Item> except = new ArrayList<>(Arrays.asList(first, four));
+        assertThat(result, is(except));
+        // assertThat(result, arrayContainingInAnyOrder(except));
 
     }
 
@@ -87,6 +98,7 @@ public class TrackerTest {
     @Test
     public void whenGetAllItemsNotNullElementsThenHasSameArraysItem() {
         Tracker tracker = new Tracker();
+        List<Item> result = new ArrayList<>();
         Item first = new Item("test1", "testDescription", 123L);
         tracker.add(first);
         Item second = new Item("test2", "testDescription2", 124L);
@@ -95,9 +107,10 @@ public class TrackerTest {
         tracker.add(third);
         Item four = new Item("test4", "testDescription4", 126L);
         tracker.add(four);
-        Item[] result = tracker.getAll();
-        Item[] except = {first, second, third, four};
-        assertThat(result, arrayContainingInAnyOrder(except));
+        result = tracker.getAll();
+        List<Item> except = new ArrayList<>(Arrays.asList(first, second, third, four));
+        assertThat(result, is(except));
+        //  assertThat(result, arrayContainingInAnyOrder(except));
 
     }
 

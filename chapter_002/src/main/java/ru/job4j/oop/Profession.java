@@ -71,7 +71,6 @@ public class Profession {
     /**
      * Метод для присваивания  значения поля profession
      */
-
     public void setProfession(String profession) {
         this.profession = profession;
     }

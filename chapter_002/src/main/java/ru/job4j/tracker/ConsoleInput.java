@@ -27,4 +27,28 @@ public class ConsoleInput implements Input {
         System.out.println(question);
         return scanner.nextLine();
     }
+
+
+    /**
+     * Метод получает данные от пользователя и проверяет
+     * их корректность.
+     * @param question стока с запросом для пользователя
+     * @param range    массив выбора возможных пунктов меню
+     * @return значение пункта меню.
+     */
+    public int ask(String question, int[] range) {
+        int key = Integer.valueOf(this.ask(question));
+        boolean exist = false;
+        for (int value : range) {
+            if (value == key) {
+                exist = true;
+                break;
+            }
+        }
+        if (exist) {
+            return key;
+        } else {
+            throw new MenuOutException(" Пункт меню не соответствует диапазону.");
+        }
+    }
 }
