@@ -35,7 +35,6 @@
                 count++;
             }
         }
-
         return value.length == count;
     }
 
