@@ -1,5 +1,8 @@
 package ru.job4j.list;
 
+import net.jcip.annotations.GuardedBy;
+import net.jcip.annotations.ThreadSafe;
+
 import java.util.*;
 
 /**
@@ -10,25 +13,30 @@ import java.util.*;
  * @version $Id$
  * @since 0.1
  */
+
+@ThreadSafe
 public class SimpleLinkedList<E> implements SimpleContainer<E> {
     /**
      * Ссылка на объект первого элемента
      */
+    @GuardedBy("this")
     private Node<E> first;
     /**
      * Счетчик изменений списка
      */
+    @GuardedBy("this")
     private int modCount;
     /**
      * Размер списка
      */
+    @GuardedBy("this")
     private int size;
 
     /**
      * Метод добавляет элемент в список
      * @param e элемент
      */
-    public void add(E e) {
+    public synchronized void add(E e) {
         Node<E> newNote = new Node<>();
         newNote.data = e;
         if (first == null) {
@@ -46,7 +54,7 @@ public class SimpleLinkedList<E> implements SimpleContainer<E> {
      * @param index индекс элемента
      * @return элемент списка.
      */
-    public E get(int index) {
+    public synchronized   E get(int index) {
         Node<E> x = first;
         for (int i = 0; i < index; i++) {
             x = x.next;
@@ -59,7 +67,7 @@ public class SimpleLinkedList<E> implements SimpleContainer<E> {
      * @param e   элемента
      * @return true если содержит, false нет.
      */
-    public boolean contains(E e) {
+    public  boolean contains(E e) {
         boolean flag = false;
         Iterator<E> it = this.iterator();
         while (it.hasNext()) {
@@ -75,7 +83,7 @@ public class SimpleLinkedList<E> implements SimpleContainer<E> {
     /**
      * Класс предназначен для хранения данных.
      */
-    private static class Node<E> {
+    private  static class Node<E> {
         Node<E> next;
         E data;
     }
@@ -99,7 +107,8 @@ public class SimpleLinkedList<E> implements SimpleContainer<E> {
         /**
          * Ссылка на объект первого элемента
          */
-        private Node<E> nextNode = first;
+            private Node<E> nextNode = first;
+
         /**
          * Элемент списка
          */
@@ -113,7 +122,7 @@ public class SimpleLinkedList<E> implements SimpleContainer<E> {
         /**
          * Счетчик изменений списка
          */
-        int expectedModCount = modCount;
+        final int expectedModCount = modCount;
 
         /**
          * Метод проверяет , есть следующий элемент в контейнере
@@ -130,7 +139,7 @@ public class SimpleLinkedList<E> implements SimpleContainer<E> {
          * @throws NoSuchElementException если в контейнере нет элементов.
          */
         @Override
-        public E next() {
+        public  E next() {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }

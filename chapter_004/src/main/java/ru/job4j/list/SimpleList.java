@@ -145,7 +145,6 @@ public class SimpleList<E> implements SimpleContainer<E> {
          * @return следующий элемент в контейнере.
          * @throws NoSuchElementException если в контейнере нет элементов.
          */
-        //this.checkModification(DynamicLinkedContainer.this.modCount);
         @Override
         @SuppressWarnings("unchecked")
         public synchronized E next() {
