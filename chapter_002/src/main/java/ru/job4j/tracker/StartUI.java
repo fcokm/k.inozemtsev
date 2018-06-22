@@ -95,6 +95,7 @@ public class StartUI {
                 String desc = input.ask("Введите описание заявки :");
                 Item item = new Item(name, desc);
                 tracker.add(item);
+                String.format("%s  %s  %s", "--Заявка  с id добавлена: ", item.getId(), "\n");
             }
         });
         menu.addAction(new MenuTracker().new ShowItems(1, "Список всех заявок\n") {
@@ -147,6 +148,7 @@ public class StartUI {
                 }
             }
         });
+
         int[] range = menu.fillRange();
         boolean exit = false;
         while (!exit) {
@@ -168,3 +170,5 @@ public class StartUI {
     }
 
 }
+
+

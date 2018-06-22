@@ -26,7 +26,7 @@ public class Tracker {
     private int position = 0;
 
     /**
-     * Метод реализаущий добавление заявки в хранилище
+     * Метод реализающий добавление заявки в хранилище
      *
      * @param item новая заявка
      * @return Item заявка.
@@ -89,7 +89,7 @@ public class Tracker {
      */
 
     public Item findById(String id) {
-        Item item = new Item();
+        Item item = null;
         for (Item it : this.itemList) {
             if (it.getId().equals(id)) {
                 item = it;
@@ -109,7 +109,6 @@ public class Tracker {
 
     /**
      * Метод генерирует уникальный ключ для заявки.
-     *
      * @return id Уникальный ключ.
      */
     private String generateId() {

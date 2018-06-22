@@ -120,7 +120,6 @@ public class ParallelSearch {
      */
     public void search() {
         File file;
-        synchronized (this.files) {
             while (!finish) {
                 while (!files.isEmpty()) {
                     try {
@@ -142,7 +141,7 @@ public class ParallelSearch {
                     }
                 }
             }
-       }
+
     }
 
 
@@ -150,7 +149,7 @@ public class ParallelSearch {
      * Метод возвращает список адресов файлов
      * @return paths
      */
-    synchronized public List<String> result() {
+     public List<String> result() {
         return this.paths;
     }
 

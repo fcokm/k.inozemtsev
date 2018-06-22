@@ -1,5 +1,7 @@
 package ru.job4j.list;
 
+import net.jcip.annotations.ThreadSafe;
+
 /**
  *  Class SimpleArrayList класс реализует односвязный список
  *
@@ -7,6 +9,7 @@ package ru.job4j.list;
  * @version $Id$
  * @since 0.1
  */
+@ThreadSafe
 public class SimpleArrayList<E> {
     /**
      * Размер списка

@@ -2,6 +2,8 @@ package ru.job4j.set;
 
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Class SimpleHashMap класс реализует контейнер типа Set на базе хэш-таблицы
@@ -169,7 +171,7 @@ public class SimpleHashSet<E> {
         private int hash(K key) {
             int hash = 31;
             hash = hash * 17 + key.hashCode();
-            return hash % hashTable.length;
+            return hash %  hashTable.length;
         }
 
         /**
@@ -204,6 +206,5 @@ public class SimpleHashSet<E> {
         }
 
     }
-
 
 }

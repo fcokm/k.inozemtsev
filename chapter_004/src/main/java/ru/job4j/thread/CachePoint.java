@@ -1,4 +1,5 @@
 package ru.job4j.thread;
+
 /**
  * Class CachePoint
  *
@@ -7,27 +8,30 @@ package ru.job4j.thread;
  * @since 0.1
  */
 public class CachePoint {
-    static int moneyAmount = 100;
+     static int moneyAmount = 100;
 
     static  void getMoney(int money) {
-        if(moneyAmount >= money) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        //synchronized (moneyAmount) {
+            if (moneyAmount >= money) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                moneyAmount -= money;
+
+                System.err.println("New amount: " + moneyAmount);
+            } else {
+                System.out.println("No enough money");
             }
-            moneyAmount -= money;
-            System.err.println("New amount: " + moneyAmount);
-        } else {
-            System.out.println("No enough money");
-        }
+       // }
     }
 
     public static void main(String[] args) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-               getMoney(50);
+              getMoney(50);
             }
         }).start();
 
@@ -45,4 +49,6 @@ public class CachePoint {
             }
         }).start();
     }
+
+
 }
