@@ -1,10 +1,15 @@
 package ru.job4j.tracker;
 
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.*;
+import java.util.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
 
 /**
  * Class Tracker реализует функционал хранения и обработки  заявок
@@ -25,6 +30,13 @@ public class Tracker {
      */
     private int position = 0;
 
+
+    /**
+     * Ссылка на соединение с базой
+     */
+    private DbHelper dbHelper = DbHelper.getInstance();
+
+
     /**
      * Метод реализающий добавление заявки в хранилище
      *
@@ -32,8 +44,15 @@ public class Tracker {
      * @return Item заявка.
      */
     public Item add(Item item) {
-        item.setId(this.generateId());
-        this.itemList.add(item);
+        String sql = "insert into item (name, description, creared) VALUES (?, ?, ?);";
+        try (PreparedStatement ps = dbHelper.getConn().prepareStatement(sql)) {
+            ps.setString(1, item.getName());
+            ps.setString(2, item.getDesc());
+            ps.setTimestamp(3, new Timestamp(Calendar.getInstance().getTimeInMillis()));
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return item;
     }
 
@@ -43,12 +62,16 @@ public class Tracker {
      * @param id   идентификатор заявки
      * @param item новая заявка.
      */
-    public void replace(String id, Item item) {
-        for (Item it : this.itemList) {
-            if (it.getId().equals(id)) {
-                this.itemList.add(item);
-                break;
-            }
+    public void replace(int id, Item item) {
+        String sql = "update item set  name = ?,  description = ?,  creared = ?   where id = ?";
+        try (PreparedStatement ps = dbHelper.getConn().prepareStatement(sql)) {
+            ps.setString(1, item.getName());
+            ps.setString(2, item.getDesc());
+            ps.setTimestamp(3, item.getCreared());
+            ps.setInt(4, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -57,25 +80,37 @@ public class Tracker {
      *
      * @param id идентификатор заявки
      */
-    public void delete(String id) {
-        for (Item item : this.itemList) {
-            if (item.getId().equals(id)) {
-                this.itemList.remove(item);
-                break;
-            }
+    public void delete(int id) {
+        String sql = "delete from item where id = ?";
+        try (PreparedStatement ps = dbHelper.getConn().prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
     /**
      * Метод возвращает список заявок по имени
+     *
      * @return result список заявок.
      */
     List<Item> findByName(String key) {
         List<Item> items = new ArrayList<>();
-        for (Item item : this.itemList) {
-            if (item.getName().equals(key)) {
-                items.add(item);
+        String sql = "select * form item where key = ?";
+        try (PreparedStatement ps = dbHelper.getConn().prepareStatement(sql)) {
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Item item = new Item();
+                    item.setId(rs.getInt("id"));
+                    item.setName(rs.getString("name"));
+                    item.setDesc(rs.getString("description"));
+                    item.setCreared(rs.getTimestamp("creared"));
+                    items.add(item);
+                }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return items;
     }
@@ -88,12 +123,21 @@ public class Tracker {
      * @return Item заявка, если нет null .
      */
 
-    public Item findById(String id) {
+    public Item findById(int id) {
         Item item = null;
-        for (Item it : this.itemList) {
-            if (it.getId().equals(id)) {
-                item = it;
+        String sql = "select * form item where id = ?";
+        try (PreparedStatement ps = dbHelper.getConn().prepareStatement(sql)) {
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    item = new Item();
+                    item.setId(rs.getInt("id"));
+                    item.setName(rs.getString("name"));
+                    item.setDesc(rs.getString("description"));
+                    item.setCreared(rs.getTimestamp("creared"));
+                }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return item;
     }
@@ -101,22 +145,27 @@ public class Tracker {
 
     /**
      * Метод возвращает список всех заявок
+     *
      * @return список заявок.
      */
     public List<Item> getAll() {
-        return this.itemList;
-    }
-
-    /**
-     * Метод генерирует уникальный ключ для заявки.
-     * @return id Уникальный ключ.
-     */
-    private String generateId() {
-        String id = " ";
-        do {
-            id = Integer.toString(new Random(System.nanoTime()).nextInt(100) + 1);
-        } while (this.findById(id) != null);
-        return id;
+        List<Item> items = new ArrayList<>();
+        String sql = "select * from item";
+        try (PreparedStatement ps = dbHelper.getConn().prepareStatement(sql)) {
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Item item = new Item();
+                    item.setId(rs.getInt("id"));
+                    item.setName(rs.getString("name"));
+                    item.setDesc(rs.getString("description"));
+                    item.setCreared(rs.getTimestamp("creared"));
+                    items.add(item);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return items;
     }
 
 
