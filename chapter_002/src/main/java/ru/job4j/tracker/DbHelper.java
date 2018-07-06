@@ -1,5 +1,8 @@
 package ru.job4j.tracker;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
@@ -21,6 +24,12 @@ public class DbHelper {
      * Ссылка на объект соединения с базой данных
      */
     private Connection conn;
+
+    /**
+     * Ссылка на логер
+     */
+    private static Logger logger = LoggerFactory.getLogger(DbHelper.class);
+
     /**
      * Ссылка на объект класса
      */
@@ -40,10 +49,8 @@ public class DbHelper {
      * Конструктор  - создание нового соединения с базой данных
      */
     private DbHelper() {
-        InputStream fis = null;
         Properties prop = new Properties();
-        try {
-            fis = DbHelper.class.getClassLoader().getResourceAsStream("confing.properties");
+        try (InputStream fis = DbHelper.class.getClassLoader().getResourceAsStream("confing.properties")) {
             prop.load(fis);
             String url = prop.getProperty("url");
             String username = prop.getProperty("username");
@@ -56,24 +63,17 @@ public class DbHelper {
                 stmt.executeUpdate(createSql);
                 stmt.close();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                fis.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+           logger.error(e.getMessage(), e);
         }
+
     }
+
 
     /**
      * Метод возвращает ссылку на соединение с базой
-     * @return  conn
+     *
+     * @return conn
      */
     public Connection getConn() {
         return conn;
@@ -81,6 +81,7 @@ public class DbHelper {
 
     /**
      * Метод проверяет существует таблица в базе
+     *
      * @return true существует
      */
     boolean isTablesExist() throws Exception {
@@ -90,13 +91,14 @@ public class DbHelper {
                 new String[]{"TABLE"})) {
             exist = res.next();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         return exist;
     }
 
     /**
      * Метод возвращает скрипт создание новой таблицы из файла
+     *
      * @return строка
      */
     String readResource(Class cpHolder, String path) throws Exception {

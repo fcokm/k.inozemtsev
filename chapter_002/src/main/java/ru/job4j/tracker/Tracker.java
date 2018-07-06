@@ -1,12 +1,7 @@
 package ru.job4j.tracker;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.sql.*;
 import java.util.*;
 
@@ -38,6 +33,11 @@ public class Tracker {
 
 
     /**
+     * Ссылка на логер
+     */
+    private static Logger logger = LoggerFactory.getLogger(Tracker.class);
+
+    /**
      * Метод реализающий добавление заявки в хранилище
      *
      * @param item новая заявка
@@ -51,7 +51,7 @@ public class Tracker {
             ps.setTimestamp(3, new Timestamp(Calendar.getInstance().getTimeInMillis()));
             ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         return item;
     }
@@ -71,7 +71,7 @@ public class Tracker {
             ps.setInt(4, id);
             ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -86,7 +86,7 @@ public class Tracker {
             ps.setInt(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -110,7 +110,7 @@ public class Tracker {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         return items;
     }
@@ -137,7 +137,7 @@ public class Tracker {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         return item;
     }
@@ -163,7 +163,7 @@ public class Tracker {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         return items;
     }
