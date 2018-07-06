@@ -6,17 +6,19 @@ select * from product as p inner join type as t on p.type_id = t.id
 --2. Запрос получения всех продуктов, у кого в имени есть слово "мороженное"
 
 select * from product as p inner join type as t on p.type_id = t.id 
-where t.name like 'мороженное';
+where t.name like '%мороженное%';
 
 --3. Запрос, который выводит все продукты, срок годности которых
  заканчивается в следующем месяце.
  
 select * from product as p inner join type as t on p.type_id = t.id 
-where p.expired_date  BETWEEN '2018-07-01 00:00:00' AND '2018-07-31 23:59:59';
+where p.expired_date BETWEEN  (SELECT 'today' ::timestamp)
+and ( SELECT 'today' ::timestamp  + '1 month'::interval);
 
 --4. Запрос, который вывод самый дорогой продукт.
 
-select MAX(price) as price from  product;
+select name, price  from  product
+   where price = (select max(price) from product);
 
 --5. Запрос, который выводит количество всех продуктов определенного типа.
 
