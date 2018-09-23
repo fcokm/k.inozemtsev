@@ -49,11 +49,7 @@ public class ConvertXSQT {
                     new FileInputStream(scheme))));
             transformer.transform(new StreamSource(new BufferedInputStream(new FileInputStream(source))),
                     new StreamResult(dest));
-        } catch (TransformerConfigurationException e) {
-            logger.error(e.getMessage(), e);
-        } catch (FileNotFoundException e) {
-            logger.error(e.getMessage(), e);
-        } catch (TransformerException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
     }
@@ -71,11 +67,7 @@ public class ConvertXSQT {
         try {
             saxParser = factory.newSAXParser();
             saxParser.parse(file, handler);
-        } catch (ParserConfigurationException e) {
-            logger.error(e.getMessage(), e);
-        } catch (SAXException e) {
-            logger.error(e.getMessage(), e);
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
     }

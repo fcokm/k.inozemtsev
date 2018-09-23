@@ -16,16 +16,6 @@ import java.sql.*;
 public class StoreSQL {
 
     /**
-     * Ссылка на объект соединения с базой данных
-     */
-    private Connection connection;
-
-    /**
-     * Ссылка на объект класса
-     */
-    private static StoreSQL instance;
-
-    /**
      * Ссылка на логер
      */
     private static Logger logger = LoggerFactory.getLogger(StoreSQL.class);
@@ -33,25 +23,27 @@ public class StoreSQL {
     /**
      * Метод возвращает ссылку на приватный конструктор
      */
-    public static StoreSQL getInstance(Config config) {
+   /* public static StoreSQL getInstance(Config config) {
         if (instance == null) {
             instance = new StoreSQL(config);
         }
         return instance;
-    }
+    }*/
+    private String databaseUrl;
 
     /**
      * Конструктор  - создание нового соединения с базой данных
      */
-    private StoreSQL(Config config) {
-        try {
-            String databaseUrl = config.getUrl();
-            Class.forName("org.sqlite.JDBC");
-            connection = DriverManager.getConnection(databaseUrl);
+    public StoreSQL(Config config) {
+        this.databaseUrl = config.getUrl();
+        System.err.println(databaseUrl);
+        try (Connection connection = DriverManager.getConnection(databaseUrl)) {
             if (!isTablesExist()) {
-                Statement stmt = connection.createStatement();
-                stmt.executeUpdate(config.getCreateTable());
-                stmt.close();
+                try (Statement stmt = connection.createStatement()) {
+                    stmt.executeUpdate(config.getCreateTable());
+                } catch (SQLException e) {
+                    logger.error(e.getMessage(), e);
+                }
             }
             if (!isEmptyTable()) {
                 deleteAllRecords();
@@ -61,22 +53,25 @@ public class StoreSQL {
         }
     }
 
+
     /**
      * Метод проверяет существует таблица в базе
+     *
      * @return true существует
      */
     private boolean isTablesExist() throws Exception {
         boolean result = true;
-        Statement stmt = connection.createStatement();
-        try (ResultSet rs = stmt.executeQuery("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='entry'")) {
+        System.out.println(databaseUrl);
+        try (Connection connection = DriverManager.getConnection(databaseUrl);
+             Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='entry'")) {
             int count = rs.getInt(1);
             if (count == 0) {
                 result = false;
             }
         } catch (SQLException e) {
-            connection.rollback();
+            logger.error(e.getMessage(), e);
         }
-
         return result;
     }
 
@@ -85,7 +80,8 @@ public class StoreSQL {
      */
     private void deleteAllRecords() {
         String sql = "delete from entry";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (Connection connection = DriverManager.getConnection(databaseUrl);
+             PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.executeUpdate();
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
@@ -99,7 +95,8 @@ public class StoreSQL {
      */
     void generate(int n) {
         String insert = "insert into entry (value) values (?)";
-        try (PreparedStatement ps = connection.prepareStatement(insert)) {
+        try (Connection connection = DriverManager.getConnection(databaseUrl);
+             PreparedStatement ps = connection.prepareStatement(insert)) {
             while (0 < n) {
                 ps.setInt(1, n--);
                 ps.executeUpdate();
@@ -118,7 +115,8 @@ public class StoreSQL {
     boolean isEmptyTable() {
         String sql = "select * from entry";
         boolean flag = true;
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (Connection connection = DriverManager.getConnection(databaseUrl);
+             PreparedStatement ps = connection.prepareStatement(sql)) {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     flag = false;
@@ -133,12 +131,14 @@ public class StoreSQL {
 
     /**
      * Метод возвращает объект Entry
+     *
      * @return entries
      */
     public Entry getEntries() {
         Entry entries = new Entry();
         String sql = "select * from entry";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (Connection connection = DriverManager.getConnection(databaseUrl);
+             PreparedStatement ps = connection.prepareStatement(sql)) {
             connection.setAutoCommit(false);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
