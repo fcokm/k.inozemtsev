@@ -2,21 +2,18 @@ package ru.job4j.servlets;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
+
 
 /**
  * Class UserServlet
@@ -36,20 +33,16 @@ public class UserServlet extends HttpServlet {
 
     private final  AtomicInteger atomicInt = new AtomicInteger(0);
 
-
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        PrintWriter writer = new PrintWriter(res.getOutputStream());
         if (!load(req.getParameter("action"), req)) {
-            writer.append("User with id not found or entered incorrect data!\n");
             logger.error("User with id not found or entered incorrect data!");
         } else {
             logger.debug("Operation completed successfully!");
         }
-        writer.flush();
         ServletContext context = req.getServletContext();
         context.setAttribute("userList", this.validator.findAll());
-        req.getRequestDispatcher("/users").include(req, res);
+        req.getRequestDispatcher(req.getContextPath() + "/main.jsp").forward(req, res);
     }
 
     @Override
