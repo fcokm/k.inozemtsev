@@ -1,5 +1,6 @@
 <%@ page import="ru.job4j.servlets.User" %>
 <%@ page import="ru.job4j.servlets.MemoryDataStore" %>
+<%@ page import="ru.job4j.servlets.DbStore" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -7,7 +8,7 @@
 </head>
 <body>
 <%
-    User user = MemoryDataStore.INSTANCE.findById(Integer.parseInt(request.getParameter("id")));
+    User user = DbStore.getInstance().findById(Integer.parseInt(request.getParameter("id")));
 %>
 <h3>Input user data</h3>
 <div style="padding: 15px 5px">

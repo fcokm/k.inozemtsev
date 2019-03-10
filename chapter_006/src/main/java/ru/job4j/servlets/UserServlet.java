@@ -2,16 +2,14 @@ package ru.job4j.servlets;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 
@@ -31,8 +29,6 @@ public class UserServlet extends HttpServlet {
 
     private final static Logger logger = LoggerFactory.getLogger(UserServlet.class);
 
-    private final  AtomicInteger atomicInt = new AtomicInteger(0);
-
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         if (!load(req.getParameter("action"), req)) {
@@ -40,8 +36,6 @@ public class UserServlet extends HttpServlet {
         } else {
             logger.debug("Operation completed successfully!");
         }
-        ServletContext context = req.getServletContext();
-        context.setAttribute("userList", this.validator.findAll());
         req.getRequestDispatcher(req.getContextPath() + "/main.jsp").forward(req, res);
     }
 
@@ -59,11 +53,10 @@ public class UserServlet extends HttpServlet {
     public Function<HttpServletRequest, Boolean> add() {
         return req -> {
             User user = new User();
-            user.setId(atomicInt.incrementAndGet());
             user.setName(req.getParameter("name"));
             user.setLogin(req.getParameter("login"));
             user.setEmail(req.getParameter("email"));
-            user.setData(LocalDateTime.now());
+            user.setData(new Timestamp(System.currentTimeMillis()));
             return validator.add(user);
         };
     }
@@ -83,7 +76,7 @@ public class UserServlet extends HttpServlet {
             user.setName(req.getParameter("name"));
             user.setLogin(req.getParameter("login"));
             user.setEmail(req.getParameter("email"));
-            user.setData(LocalDateTime.now());
+            user.setData(new Timestamp(System.currentTimeMillis()));
             return validator.update(user);
         };
     }

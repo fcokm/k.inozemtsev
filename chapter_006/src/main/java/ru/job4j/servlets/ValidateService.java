@@ -16,7 +16,7 @@ public enum ValidateService {
 
     INSTANCE;
 
-    private final DataStore dataStore = MemoryDataStore.INSTANCE;
+    private final DataStore dataStore = DbStore.getInstance();
 
     public boolean add(User user) {
         if (dataStore.findById(user.getId()) == null) {

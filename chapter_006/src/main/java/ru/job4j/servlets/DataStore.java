@@ -9,16 +9,16 @@ import java.util.Collection;
  * @version $Id$
  * @since 0.1
  */
-public interface DataStore {
+public interface DataStore<T> {
 
-    void add(User user);
+    T add(T data);
 
-    void update(User user);
+    void update(T data);
 
     void delete(int id);
 
-    Collection<User> findAll();
+    Collection<T> findAll();
 
-    User findById(int id);
+    T findById(int id);
 }
 

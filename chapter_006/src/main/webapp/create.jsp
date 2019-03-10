@@ -10,7 +10,7 @@
         Name:<br>
         <input type="text" name="name">
         <br>Login:<br>
-        <input type="text" name="id">
+        <input type="text" name="login">
         <br>Email:<br>
         <input type="text" name="email">
         <input type="hidden" name="action" value="add">

@@ -13,20 +13,21 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 0.1
  */
 
-public enum MemoryDataStore implements DataStore {
+public enum MemoryDataStore implements DataStore<User> {
 
     INSTANCE;
 
     private final Map<Integer, User> users = new ConcurrentHashMap<>();
 
     @Override
-    public void add(User user) {
+    public User add(User user) {
         users.put(user.getId(), user);
+        return user;
     }
 
     @Override
     public void update(User user) {
-            users.put(user.getId(), user);
+        users.put(user.getId(), user);
     }
 
     @Override

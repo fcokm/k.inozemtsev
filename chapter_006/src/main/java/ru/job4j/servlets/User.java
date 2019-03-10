@@ -1,5 +1,6 @@
 package ru.job4j.servlets;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
@@ -19,12 +20,12 @@ public class User {
     private String name;
     private String login;
     private String email;
-    private LocalDateTime data;
+    private Timestamp data;
 
     public User() {
     }
 
-    public User(int id, String name, String login, String email, LocalDateTime data) {
+    public User(int id, String name, String login, String email, Timestamp data) {
         this.id = id;
         this.name = name;
         this.login = login;
@@ -65,7 +66,7 @@ public class User {
     }
 
 
-    public LocalDateTime getData() {
+/*   public LocalDateTime getData() {
         return data;
     }
 
@@ -75,6 +76,14 @@ public class User {
 
     public String getFormatCreationDate() {
         return DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss").format(data);
+    }*/
+
+    public Timestamp getData() {
+        return data;
+    }
+
+    public void setData(Timestamp data) {
+        this.data = data;
     }
 
     @Override
@@ -96,7 +105,7 @@ public class User {
     public String toString() {
         return String.format(
                 "Id: %d, Name: %s, Login: %s, Email: %s, Data: %s ",
-                id, name, login, email, getFormatCreationDate());
+                id, name, login, email, data);
 
     }
 }

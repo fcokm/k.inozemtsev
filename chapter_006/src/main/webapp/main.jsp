@@ -1,5 +1,6 @@
 <%@ page import="ru.job4j.servlets.User" %>
 <%@ page import="java.util.Collection" %>
+<%@ page import="ru.job4j.servlets.ValidateService" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -22,10 +23,9 @@
         <th>Delete</th>
     </tr>
     <%
-        Collection<User> users = (Collection<User>) application.getAttribute("userList");
+        Collection<User> users = ValidateService.INSTANCE.findAll();
         if (users != null) {
             for (User user : users) {
-                application.setAttribute("user", user);
     %>
     <tr>
         <td><%= user.getId()%>
