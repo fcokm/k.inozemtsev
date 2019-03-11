@@ -2,6 +2,7 @@ package ru.job4j.servlets;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +17,7 @@ import java.util.function.Function;
 /**
  * Class UserServlet
  *
- * @author Konstantin 
+ * @author Konstantin
  * @version $Id$
  * @since 0.1
  */
@@ -29,6 +30,15 @@ public class UserServlet extends HttpServlet {
 
     private final static Logger logger = LoggerFactory.getLogger(UserServlet.class);
 
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        String page = req.getParameter("page");
+        req.getServletContext().setAttribute("userList", this.validator.findAll());
+        String redirectPage = page == null ? "/WEB-INF/main.jsp" : String.format("/WEB-INF/%s", page);
+        req.getRequestDispatcher(redirectPage).forward(req, res);
+    }
+
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         if (!load(req.getParameter("action"), req)) {
@@ -36,7 +46,7 @@ public class UserServlet extends HttpServlet {
         } else {
             logger.debug("Operation completed successfully!");
         }
-        req.getRequestDispatcher(req.getContextPath() + "/main.jsp").forward(req, res);
+        doGet(req, res);
     }
 
     @Override
