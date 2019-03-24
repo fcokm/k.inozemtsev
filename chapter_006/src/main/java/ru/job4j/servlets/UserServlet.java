@@ -9,9 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 /**
@@ -23,71 +22,69 @@ import java.util.function.Function;
  */
 
 public class UserServlet extends HttpServlet {
-
-    private final Map<String, Function<HttpServletRequest, Boolean>> map = new HashMap<>();
-
-    private final ValidateService validator = ValidateService.INSTANCE;
-
+    private final Validate validator = ValidateService.getInstance();
+    private final AtomicBoolean isValidUserData = new AtomicBoolean(true);
     private final static Logger logger = LoggerFactory.getLogger(UserServlet.class);
-
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         String page = req.getParameter("page");
-        req.getServletContext().setAttribute("userList", this.validator.findAll());
+        if (isValidUserData.get() == false) {
+            String jspPath = req.getParameter("jspPath");
+            req.setAttribute("isValidlogin", "invalid");
+            if (Objects.nonNull(jspPath)) {
+                req.getRequestDispatcher(jspPath).forward(req, res);
+                return;
+            }
+        }
+        req.getServletContext().setAttribute("userList", this.validator.getAll());
         String redirectPage = page == null ? "/WEB-INF/main.jsp" : String.format("/WEB-INF/%s", page);
         req.getRequestDispatcher(redirectPage).forward(req, res);
     }
 
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        if (!load(req.getParameter("action"), req)) {
-            logger.error("User with id not found or entered incorrect data!");
+        User user = getUserFromRequestParam(req);
+        if (!validator.load(req.getParameter("action"), user)) {
+            isValidUserData.set(false);
+            logger.error("User with id  " + req.getParameter("id") +
+                    " not found or entered incorrect data!", UserServlet.class);
         } else {
-            logger.debug("Operation completed successfully!");
+            isValidUserData.set(true);
+            logger.info("Operation completed successfully!", UserServlet.class);
         }
         doGet(req, res);
     }
 
-    @Override
-    public void init() {
-        map.put("add", this.add());
-        map.put("delete", this.delete());
-        map.put("update", this.update());
-    }
 
-    public boolean load(String key, HttpServletRequest req) {
-        return map.get(key).apply(req);
-    }
-
-    public Function<HttpServletRequest, Boolean> add() {
-        return req -> {
-            User user = new User();
-            user.setName(req.getParameter("name"));
-            user.setLogin(req.getParameter("login"));
-            user.setEmail(req.getParameter("email"));
-            user.setData(new Timestamp(System.currentTimeMillis()));
-            return validator.add(user);
-        };
-    }
-
-    public Function<HttpServletRequest, Boolean> delete() {
-        return req -> {
-            User user = new User();
+    private User getUserFromRequestParam(HttpServletRequest req) {
+        User user = new User();
+        if (Objects.nonNull(req.getParameter("id"))) {
             user.setId(Integer.parseInt(req.getParameter("id")));
-            return validator.delete(user.getId());
-        };
+        }
+        user.setName(req.getParameter("name"));
+        user.setLogin(req.getParameter("login"));
+        user.setUpdateLogin(req.getParameter("loginUpdate"));
+        user.setEmail(req.getParameter("email"));
+        user.setPassword(req.getParameter("password"));
+        user.setRole(req.getParameter("role"));
+        user.setData(new Timestamp(System.currentTimeMillis()));
+        return user;
     }
 
-    public Function<HttpServletRequest, Boolean> update() {
-        return req -> {
-            User user = new User();
-            user.setId(Integer.parseInt(req.getParameter("id")));
-            user.setName(req.getParameter("name"));
-            user.setLogin(req.getParameter("login"));
-            user.setEmail(req.getParameter("email"));
-            user.setData(new Timestamp(System.currentTimeMillis()));
-            return validator.update(user);
-        };
-    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

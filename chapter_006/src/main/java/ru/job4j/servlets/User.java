@@ -1,10 +1,7 @@
 package ru.job4j.servlets;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
-
 
 
 /**
@@ -21,16 +18,36 @@ public class User {
     private String login;
     private String email;
     private Timestamp data;
+    private String password;
+    private String role;
+    private String updateLogin;
 
     public User() {
     }
 
-    public User(int id, String name, String login, String email, Timestamp data) {
+
+    public User(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public User(int id, String login, String password, String role) {
+        this.id =id;
+        this.login = login;
+        this.password = password;
+        this.role =role;
+    }
+
+    public User(int id, String name, String login, String email, Timestamp data, String password,
+                String role, String updateLogin) {
         this.id = id;
         this.name = name;
         this.login = login;
         this.email = email;
         this.data = data;
+        this.password = password;
+        this.role = role;
+        this.updateLogin = updateLogin;
     }
 
     public String getName() {
@@ -39,6 +56,14 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getUpdateLogin() {
+        return updateLogin;
+    }
+
+    public void setUpdateLogin(String sessionLogin) {
+        this.updateLogin = sessionLogin;
     }
 
     public int getId() {
@@ -65,18 +90,13 @@ public class User {
         this.email = email;
     }
 
-
-/*   public LocalDateTime getData() {
-        return data;
+    public String getPassword() {
+        return password;
     }
 
-    public void setData(LocalDateTime data) {
-        this.data = data;
+    public void setPassword(String password) {
+        this.password = password;
     }
-
-    public String getFormatCreationDate() {
-        return DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss").format(data);
-    }*/
 
     public Timestamp getData() {
         return data;
@@ -92,14 +112,25 @@ public class User {
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
         return id == user.id &&
-                Objects.equals(login, user.login);
+                Objects.equals(login, user.login) &&
+                Objects.equals(password, user.password);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, login);
+        return Objects.hash(id, login, password);
     }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+
 
     @Override
     public String toString() {

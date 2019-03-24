@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class DbStore implements DataStore<User> {
@@ -20,7 +21,7 @@ public class DbStore implements DataStore<User> {
         SOURCE.setDriverClassName("org.postgresql.Driver");
         SOURCE.setUrl("jdbc:postgresql://127.0.0.1:5432/job4j");
         SOURCE.setUsername("postgres");
-        SOURCE.setPassword("password");
+        SOURCE.setPassword("071177");
         SOURCE.setMinIdle(5);
         SOURCE.setMaxIdle(10);
         SOURCE.setMaxOpenPreparedStatements(100);
@@ -32,30 +33,25 @@ public class DbStore implements DataStore<User> {
 
     @Override
     public User add(User user) {
-        String query = "insert into users (name, login, email, data) VALUES (?, ?, ?, ?);";
+        String query = "insert into users (name, login, email, data, role, password ) VALUES (?, ?, ?, ?, ?, ?);";
         try (Connection connection = SOURCE.getConnection();
              PreparedStatement ps = connection.prepareStatement(query)) {
-            ps.setString(1, user.getName());
-            ps.setString(2, user.getLogin());
-            ps.setString(3, user.getEmail());
-            ps.setTimestamp(4, user.getData());
+            statementCall(ps, user);
             ps.executeUpdate();
         } catch (Exception e) {
-          logger.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
         return user;
     }
 
     @Override
     public void update(User user) {
-        String sql = "update users set  name = ?,  login = ?,  email = ? , data = ?  where id = ?";
+        String sql = "update users set  name = ?,  login = ?,  email = ? , data = ? , role = ?, " +
+                "password = ?  where id = ?";
         try (Connection connection = SOURCE.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, user.getName());
-            ps.setString(2, user.getLogin());
-            ps.setString(3, user.getEmail());
-            ps.setTimestamp(4, user.getData());
-            ps.setInt(5, user.getId());
+            statementCall(ps, user);
+            ps.setInt(7, user.getId());
             ps.executeUpdate();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -80,23 +76,17 @@ public class DbStore implements DataStore<User> {
     @Override
     public List<User> findAll() {
         List<User> users = new ArrayList<>();
-        String sql = "select * from users";
+        String sql = "select * from users ";
         try (Connection connection = SOURCE.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    User user = new User();
-                    user.setId(rs.getInt("id"));
-                    user.setName(rs.getString("name"));
-                    user.setLogin(rs.getString("login"));
-                    user.setEmail(rs.getString("email"));
-                    user.setData(rs.getTimestamp("data"));
+                    User user = resultSetCall(rs);
                     users.add(user);
                 }
             }
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
-
         }
         return users;
     }
@@ -107,21 +97,39 @@ public class DbStore implements DataStore<User> {
         String sql = "select * from users where id=?";
         try (Connection connection = SOURCE.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
-             ps.setInt(1, id);
-             ResultSet rs = ps.executeQuery(); {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            {
                 if (rs.next()) {
-                    user = new User();
-                    user.setId(rs.getInt("id"));
-                    user.setName(rs.getString("name"));
-                    user.setLogin(rs.getString("login"));
-                    user.setEmail(rs.getString("email"));
-                    user.setData(rs.getTimestamp("data"));
+                    user = resultSetCall(rs);
                 }
             }
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
         }
         return user;
+    }
+
+    private User resultSetCall(ResultSet rs) throws SQLException {
+        User user = new User();
+        user.setId(rs.getInt("id"));
+        user.setName(rs.getString("name"));
+        user.setLogin(rs.getString("login"));
+        user.setEmail(rs.getString("email"));
+        user.setData(rs.getTimestamp("data"));
+        user.setRole(rs.getString("role"));
+        user.setPassword(rs.getString("password"));
+        return user;
+    }
+
+    private PreparedStatement statementCall(PreparedStatement ps, User user) throws SQLException {
+        ps.setString(1, user.getName());
+        ps.setString(2, user.getLogin());
+        ps.setString(3, user.getEmail());
+        ps.setTimestamp(4, user.getData());
+        ps.setString(5, user.getRole());
+        ps.setString(6, user.getPassword());
+        return ps;
     }
 
 }
