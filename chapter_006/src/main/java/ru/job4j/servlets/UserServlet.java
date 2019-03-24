@@ -53,7 +53,7 @@ public class UserServlet extends HttpServlet {
             isValidUserData.set(true);
             logger.info("Operation completed successfully!", UserServlet.class);
         }
-        doGet(req, res);
+      //  doGet(req, res);
     }
 
 
