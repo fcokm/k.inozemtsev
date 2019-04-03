@@ -10,6 +10,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script>
+
         function validate(field) {
             if (field.val().trim() === "") {
                 alert("Fill  Field " + field.attr('name').toUpperCase());
@@ -18,21 +19,54 @@
             }
             return true;
         }
-        function addRow() {
-            var arr = [$("#name"), $("#surname"), $("#gender"), $("#Description")];
+
+        function getJsonPersons() {
+            $.ajax({
+                url: "./json",
+                method: "get",
+                complete :function (data) {
+                    var data = JSON.parse(data.responseText);
+                    $("tr:has(td)").remove();
+                    var trHTML = '';
+                    $.each(data, function (i, item) {
+                        trHTML += '<tr>' +
+                            '<td>' + data[i].name + '</td>' +
+                            '<td>' + data[i].surname + '</td>' +
+                            '<td>' + data[i].gender + '</td>' +
+                            '<td>' + data[i].desc + '</td>' +
+                            '</tr>';
+                    });
+                    $('#table').append(trHTML);
+                }
+
+            })
+
+        }
+
+        function sendJsonPerson() {
+            var arr = [$("#name"), $("#surname"), $("#gender"), $("#description")];
             if (arr.every(validate)) {
-                $('#table tr:last').after('<tr><td>' + arr[0].val() + '</td>' +
-                    '<td>' + arr[1].val() + '</td>' +
-                    '<td>' + arr[2].val() + '</td>' +
-                    '<td>' + arr[3].val() + '</td></tr>');
+                var person = new Object();
+                person.name = arr[0].val();
+                person.surname = arr[1].val();
+                person.gender = arr[2].val();
+                person.desc = arr[3].val();
+                $.ajax({
+                    type: "post",
+                    url: "json",
+                    contentType: "json; charset=utf-8",
+                    data: JSON.stringify(person),
+                    complete: getJsonPersons()
+                });
             }
         }
+
     </script>
 </head>
 <body>
 
 <div class="container">
-    <h2>Bootstrap Example</h2>
+    <h2> data</h2>
     <form name="myForm" id="myForm">
         <div class="form-group">
             <label for="name">Name:</label>
@@ -56,11 +90,10 @@
         </div>
 
         <div class="form-group">
-            <label for="Description">Description:</label>
-            <input type="text" class="form-control" id="Description" placeholder="Enter desc" name="Description">
+            <label for="description">Description:</label>
+            <input type="text" class="form-control" id="description" placeholder="Enter desc" name="description">
         </div>
-
-        <button type="button" class="btn btn-primary" onclick="return addRow();">Submit</button>
+        <button type="button" class="btn btn-primary" onclick="return sendJsonPerson();">Submit</button>
     </form>
 </div>
 <br>
@@ -77,9 +110,10 @@
         </tr>
         </thead>
         <tbody>
+
         </tbody>
     </table>
 </div>
 <p></p>
 </body>
-</html> 
+</html>
