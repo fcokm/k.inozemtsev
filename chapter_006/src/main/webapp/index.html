@@ -9,6 +9,10 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 1f5cd76bc7037bbd7c1385104059a094e5b348e6
     <script>
 
         function validate(field) {
@@ -20,6 +24,7 @@
             return true;
         }
 
+<<<<<<< HEAD
         function getJsonPersons() {
             $.ajax({
                 url: "./json",
@@ -45,6 +50,10 @@
 
         function sendJsonPerson() {
             var arr = [$("#name"), $("#surname"), $("#gender"), $("#description")];
+=======
+        function addRow() {
+            var arr = [$("#name"), $("#surname"), $("#gender"), $("#Description")];
+>>>>>>> 1f5cd76bc7037bbd7c1385104059a094e5b348e6
             if (arr.every(validate)) {
                 var person = new Object();
                 person.name = arr[0].val();
@@ -93,7 +102,11 @@
             <label for="description">Description:</label>
             <input type="text" class="form-control" id="description" placeholder="Enter desc" name="description">
         </div>
+<<<<<<< HEAD
         <button type="button" class="btn btn-primary" onclick="return sendJsonPerson();">Submit</button>
+=======
+        <button type="button" class="btn btn-primary" onclick="return addRow();">Submit</button>
+>>>>>>> 1f5cd76bc7037bbd7c1385104059a094e5b348e6
     </form>
 </div>
 <br>
