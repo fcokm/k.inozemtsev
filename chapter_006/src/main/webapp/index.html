@@ -9,6 +9,28 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script>
+        function validate(field) {
+            if (field.val().trim() === "") {
+                alert("Fill  Field " + field.attr('name').toUpperCase());
+                field.focus();
+                return false;
+            }
+            return true;
+        }
+
+        function addRow() {
+            var arr = [$("#name"), $("#surname"), $("#gender"), $("#Description")];
+            if (arr.every(validate)) {
+                $('#table tr:last').after('<tr><td>' + arr[0].val() + '</td>' +
+                    '<td>' + arr[1].val() + '</td>' +
+                    '<td>' + arr[2].val() + '</td>' +
+                    '<td>' + arr[3].val() + '</td></tr>');
+            }
+        }
+
+    </script>
 </head>
 <body>
 
@@ -40,8 +62,7 @@
             <label for="Description">Description:</label>
             <input type="text" class="form-control" id="Description" placeholder="Enter desc" name="Description">
         </div>
-
-        <button type="button" class="btn btn-primary">Submit</button>
+        <button type="button" class="btn btn-primary" onclick="return addRow();">Submit</button>
     </form>
 </div>
 <br>
