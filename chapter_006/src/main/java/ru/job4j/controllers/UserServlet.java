@@ -1,15 +1,17 @@
-package ru.job4j.servlets;
+package ru.job4j.controllers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import ru.job4j.model.User;
+import ru.job4j.validators.Validate;
+import ru.job4j.validators.ValidateService;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.io.*;
 import java.sql.Timestamp;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
@@ -28,7 +30,7 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        String page = req.getParameter("page");
+       String page = req.getParameter("page");
         if (isValidUserData.get() == false) {
             String jspPath = req.getParameter("jspPath");
             req.setAttribute("isValidlogin", "invalid");
@@ -38,7 +40,7 @@ public class UserServlet extends HttpServlet {
             }
         }
         req.getServletContext().setAttribute("userList", this.validator.getAll());
-        String redirectPage = page == null ? "/WEB-INF/main.jsp" : String.format("/WEB-INF/%s", page);
+        String redirectPage = page == null ? "/WEB-INF/pages/main.jsp" : String.format("/WEB-INF/pages/%s", page);
         req.getRequestDispatcher(redirectPage).forward(req, res);
     }
 
@@ -53,7 +55,7 @@ public class UserServlet extends HttpServlet {
             isValidUserData.set(true);
             logger.info("Operation completed successfully!", UserServlet.class);
         }
-      //  doGet(req, res);
+       doGet(req, res);
     }
 
 
@@ -68,6 +70,8 @@ public class UserServlet extends HttpServlet {
         user.setEmail(req.getParameter("email"));
         user.setPassword(req.getParameter("password"));
         user.setRole(req.getParameter("role"));
+        user.setCountry(req.getParameter("country"));
+        user.setCity(req.getParameter("city"));
         user.setData(new Timestamp(System.currentTimeMillis()));
         return user;
     }

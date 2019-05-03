@@ -8,6 +8,11 @@ import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import ru.job4j.controllers.UserServlet;
+import ru.job4j.model.User;
+import ru.job4j.validators.Validate;
+import ru.job4j.validators.ValidateService;
+import ru.job4j.validators.ValidateStub;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

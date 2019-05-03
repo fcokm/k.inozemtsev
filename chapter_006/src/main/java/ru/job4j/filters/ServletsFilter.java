@@ -1,4 +1,4 @@
-package ru.job4j.servlets;
+package ru.job4j.filters;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +10,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ServletsFilter implements Filter {
     private final CopyOnWriteArrayList<String> roleList = new CopyOnWriteArrayList();
+
 
     @Override
     public void init(FilterConfig filterConfig) {

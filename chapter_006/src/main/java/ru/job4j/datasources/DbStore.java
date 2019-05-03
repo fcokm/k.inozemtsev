@@ -1,16 +1,17 @@
-package ru.job4j.servlets;
+package ru.job4j.datasources;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.job4j.model.Country;
+import ru.job4j.model.User;
+
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class DbStore implements DataStore<User> {
     private static final BasicDataSource SOURCE = new BasicDataSource();
@@ -33,7 +34,8 @@ public class DbStore implements DataStore<User> {
 
     @Override
     public User add(User user) {
-        String query = "insert into users (name, login, email, data, role, password ) VALUES (?, ?, ?, ?, ?, ?);";
+        String query = "insert into users (name, login, email, data, role, password, country, city ) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
         try (Connection connection = SOURCE.getConnection();
              PreparedStatement ps = connection.prepareStatement(query)) {
             statementCall(ps, user);
@@ -47,14 +49,14 @@ public class DbStore implements DataStore<User> {
     @Override
     public void update(User user) {
         String sql = "update users set  name = ?,  login = ?,  email = ? , data = ? , role = ?, " +
-                "password = ?  where id = ?";
+                "password = ? , country = ?, city = ?  where id = ?";
         try (Connection connection = SOURCE.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
             statementCall(ps, user);
-            ps.setInt(7, user.getId());
+            ps.setInt(9, user.getId());
             ps.executeUpdate();
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+           logger.error(e.getMessage(), e);
         }
 
     }
@@ -91,6 +93,29 @@ public class DbStore implements DataStore<User> {
         return users;
     }
 
+
+    public Map<String, Country> getAllCountru() {
+        Map<String, Country> countryMap = new HashMap<>();
+        String sql = "select cr.name as country ,ct.name as city \n" +
+                " from ref_book_city as ct\n" +
+                " inner join  ref_book_country as cr on ct.ref_book_country_id = cr.id ";
+        try (Connection connection = SOURCE.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String country =  rs.getString("country");
+                    String city = rs.getString("city");
+                    countryMap.computeIfPresent(country, (key, value) -> value.addCity(city));
+                    countryMap.putIfAbsent(country, new Country(country, city));
+                }
+            }
+        } catch (SQLException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return countryMap;
+    }
+
+
     @Override
     public User findById(int id) {
         User user = null;
@@ -119,6 +144,8 @@ public class DbStore implements DataStore<User> {
         user.setData(rs.getTimestamp("data"));
         user.setRole(rs.getString("role"));
         user.setPassword(rs.getString("password"));
+        user.setCountry(rs.getString("country"));
+        user.setCity(rs.getString("city"));
         return user;
     }
 
@@ -129,6 +156,8 @@ public class DbStore implements DataStore<User> {
         ps.setTimestamp(4, user.getData());
         ps.setString(5, user.getRole());
         ps.setString(6, user.getPassword());
+        ps.setString(7, user.getCountry());
+        ps.setString(8, user.getCity());
         return ps;
     }
 

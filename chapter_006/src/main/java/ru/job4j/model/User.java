@@ -1,4 +1,4 @@
-package ru.job4j.servlets;
+package ru.job4j.model;
 
 import java.sql.Timestamp;
 import java.util.Objects;
@@ -21,6 +21,8 @@ public class User {
     private String password;
     private String role;
     private String updateLogin;
+    private String country;
+    private String city;
 
     public User() {
     }
@@ -48,6 +50,19 @@ public class User {
         this.password = password;
         this.role = role;
         this.updateLogin = updateLogin;
+    }
+
+    public User(int id, String name, String login, String email, Timestamp data, String password, String role, String updateLogin, String country, String city) {
+        this.id = id;
+        this.name = name;
+        this.login = login;
+        this.email = email;
+        this.data = data;
+        this.password = password;
+        this.role = role;
+        this.updateLogin = updateLogin;
+        this.country = country;
+        this.city = city;
     }
 
     public String getName() {
@@ -104,6 +119,22 @@ public class User {
 
     public void setData(Timestamp data) {
         this.data = data;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 
     @Override

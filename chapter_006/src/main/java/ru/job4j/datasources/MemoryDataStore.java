@@ -1,5 +1,6 @@
-package ru.job4j.servlets;
+package ru.job4j.datasources;
 
+import ru.job4j.model.User;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

@@ -1,4 +1,4 @@
-package ru.job4j.servlets;
+package ru.job4j.datasources;
 
 import java.util.Collection;
 
