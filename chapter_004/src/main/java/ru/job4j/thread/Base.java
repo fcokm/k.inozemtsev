@@ -3,12 +3,16 @@ package ru.job4j.thread;
 import java.util.Objects;
 
 public class Base {
-     final private int id;
+    private int id;
     private  int version = 1;
     private String name;
 
-    public Base(int id) {
+    public void setId(int id) {
         this.id = id;
+    }
+
+    public Base(String name) {
+        this.name = name;
     }
 
     public int getId() {

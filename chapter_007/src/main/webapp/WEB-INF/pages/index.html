@@ -1,0 +1,115 @@
+!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href=" https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script>
+        function validate(field) {
+            if (field.val().trim() === "") {
+                alert("Fill  Field " + field.attr('name').toUpperCase());
+                field.focus();
+                return false;
+            }
+            return true;
+        }
+        function getJsonPersons() {
+            $.ajax({
+                url: 'json',
+                method: 'get',
+                complete :function (data) {
+                    var data = JSON.parse(data.responseText);
+                    $("tr:has(td)").remove();
+                    var trHTML = '';
+                    console.log("Inner json" + data);
+                    $.each(data, function (i, item) {
+                        trHTML += '<tr>' +
+                            '<td>' + data[i].name + '</td>' +
+                            '<td>' + data[i].surname + '</td>' +
+                            '<td>' + data[i].gender + '</td>' +
+                            '<td>' + data[i].desc + '</td>' +
+                            '</tr>';
+                    });
+                    $('#table').append(trHTML);
+                }
+            })
+        }
+        function sendJsonPerson() {
+            var arr = [$("#name"), $("#surname"), $("#gender"), $("#description")];
+            if (arr.every(validate)) {
+                var person = new Object();
+                person.name = arr[0].val();
+                person.surname = arr[1].val();
+                person.gender = arr[2].val();
+                person.desc = arr[3].val();
+                $.ajax({
+                    type: "post",
+                    url: "json",
+                    contentType: "json; charset=utf-8",
+                    data: JSON.stringify(person),
+                    complete: getJsonPersons()
+                });
+            }
+        }
+    </script>
+</head>
+<body>
+
+<div class="container">
+    <h2> data</h2>
+    <form name="myForm" id="myForm">
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" class="form-control" id="name" placeholder="Enter name" name="name">
+            <div class="valid-tooltip">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="surname">Surname:</label>
+            <input type="text" class="form-control" id="surname" placeholder="Enter surname" name="surname">
+        </div>
+
+        <div class="form-group">
+            <label for="gender">Gender</label>
+            <select id="gender" class="form-control" name="gender">
+                <option selected>Choose gender</option>
+                <option>male</option>
+                <option>woman</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <input type="text" class="form-control" id="description" placeholder="Enter desc" name="description">
+        </div>
+        <button type="button" class="btn btn-primary" onclick="return sendJsonPerson(); return false">Submit</button>
+    </form>
+</div>
+<br>
+<br>
+<div class="container">
+    <h2>Info Table</h2>
+    <table class="table table-bordered" id="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>Gender</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+</div>
+<p></p>
+</body>
+</html>
