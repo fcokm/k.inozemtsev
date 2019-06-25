@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="ru.job4j.model.Item" table="item" schema="public"
+           catalog="job4j">
+        <id name="id">
+            <column name="id" sql-type="integer"/>
+        </id>
+        <property name="name">
+            <column name="name"/>
+        </property>
+
+        <property name="created">
+            <column name="created"/>
+        </property>
+
+        <property name="done">
+            <column name="done"/>
+        </property>
+
+    </class>
+</hibernate-mapping>
+
+
+
