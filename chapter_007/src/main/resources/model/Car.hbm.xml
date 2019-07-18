@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="ru.job4j.model.Car" table="cars" schema="public"
+           catalog="job4j">
+        <id name="id">
+            <column name="id" sql-type="integer"/>
+            <generator class="identity"/>
+        </id>
+        <many-to-one name="carBody"
+                     column="body_id"
+                     class="ru.job4j.model.CarBody"
+        />
+
+        <many-to-one name="colour"
+                     column="colour_id"
+                     class="ru.job4j.model.Colour"
+        />
+
+        <many-to-one name="engine"
+                     column="engine_id"
+                     class="ru.job4j.model.Engine"
+        />
+        <many-to-one name="markCar"
+                     column="mark_id"
+                     class="ru.job4j.model.MarkCar"
+        />
+        <many-to-one name="transmission"
+                     column="transmission_id"
+                     class="ru.job4j.model.Transmission"
+        />
+    </class>
+</hibernate-mapping>
