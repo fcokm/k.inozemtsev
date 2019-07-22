@@ -5,20 +5,23 @@
 <hibernate-configuration>
     <session-factory>
         <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
-        <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/job4j</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/db</property>
         <property name="hibernate.connection.username">postgres</property>
         <property name="hibernate.connection.password">password</property>
         <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQL94Dialect</property>
          <property name="show_sql">true</property>
         <property name="current_session_context_class">thread</property>
-        <property name="hibernate.enable_lazy_load_no_trans">true</property>
-        <mapping resource="model/Item.hbm.xml"/>
-                <mapping resource="model/Car.hbm.xml"/>
-                <mapping resource="model/CarBody.hbm.xml"/>
-                <mapping resource="model/MarkCar.hbm.xml"/>
-                <mapping resource="model/Colour.hbm.xml"/>
-                <mapping resource="model/Engine.hbm.xml"/>
-                <mapping resource="model/Transmission.hbm.xml"/>
-
+        <mapping class="ru.job4j.model.part.EngineType" />
+        <mapping class="ru.job4j.model.part.EngineVolum" />
+        <mapping class="ru.job4j.model.car.Car"/>
+        <mapping class="ru.job4j.model.part.MarkCar"/>
+        <mapping class="ru.job4j.model.part.CarModel"/>
+        <mapping class="ru.job4j.model.dictionary.Colour"/>
+        <mapping class="ru.job4j.model.part.Transmission"/>
+        <mapping class="ru.job4j.model.part.CarBody"/>
+        <mapping class="ru.job4j.model.User"/>
+        <mapping class="ru.job4j.model.dictionary.Year"/>
+        <mapping class="ru.job4j.model.part.CarSale"/>
+        <mapping class="ru.job4j.model.part.CarCategory"/>
     </session-factory>
 </hibernate-configuration>
