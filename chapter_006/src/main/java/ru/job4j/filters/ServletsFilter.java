@@ -11,6 +11,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class ServletsFilter implements Filter {
     private final CopyOnWriteArrayList<String> roleList = new CopyOnWriteArrayList();
 
+
     @Override
     public void init(FilterConfig filterConfig) {
         roleList.add("admin");
