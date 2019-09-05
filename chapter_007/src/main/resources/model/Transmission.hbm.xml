@@ -12,5 +12,9 @@
         <property name="type">
             <column name="type"/>
         </property>
+        <set name="carSet" inverse="true" lazy="true" cascade="all" fetch="select">
+            <key column="transmission_id" not-null="true" />
+            <one-to-many class="ru.job4j.model.Car" />
+        </set>
     </class>
 </hibernate-mapping>

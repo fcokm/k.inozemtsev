@@ -3,7 +3,7 @@
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class name="ru.job4j.model.Car" table="car" schema="public"
+    <class name="ru.job4j.model.Car" table="cars" schema="public"
            catalog="job4j">
         <id name="id">
             <column name="id" sql-type="integer"/>

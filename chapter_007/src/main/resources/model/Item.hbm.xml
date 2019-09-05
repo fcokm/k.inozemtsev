@@ -8,10 +8,9 @@
            catalog="job4j">
         <id name="id">
             <column name="id" sql-type="integer"/>
-<<<<<<< HEAD
-=======
             <generator class="identity"/>
->>>>>>> task_49295
+
+            <generator class="identity"/>
         </id>
         <property name="name">
             <column name="name"/>
