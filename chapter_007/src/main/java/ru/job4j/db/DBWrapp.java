@@ -4,12 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import ru.job4j.util.HibernateUtil;
+
 import java.util.function.Function;
 
-@Slf4j
-public class DBStoreWrapper {
 
-    protected  <T> T tx(final Function<Session, T> command) {
+@Slf4j
+public class DBWrapp {
+
+    protected <T> T tx(final Function<Session, T> command) {
         final Session session = HibernateUtil
                 .getSessionFactory()
                 .openSession();
@@ -30,4 +32,6 @@ public class DBStoreWrapper {
             }
         }
     }
+
+
 }
