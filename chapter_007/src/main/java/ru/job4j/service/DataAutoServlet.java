@@ -31,7 +31,7 @@ public class DataAutoServlet extends HttpServlet {
     }
 
     public Function<String, List<Car>> getListCarsNotPhoto() {
-        return s -> storage.findCar();
+        return s -> storage.findCarByPhoto();
     }
 
     public Function<String, List<Car>> getListAllCars() {
@@ -41,8 +41,6 @@ public class DataAutoServlet extends HttpServlet {
     public Function<String, List<Car>> getListCarByLastDay() {
         return s -> storage.getListCarByLastDay();
     }
-
-
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {

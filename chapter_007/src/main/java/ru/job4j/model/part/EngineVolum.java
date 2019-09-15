@@ -2,7 +2,9 @@ package ru.job4j.model.part;
 
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import ru.job4j.model.car.Car;
 
@@ -14,6 +16,8 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
+@ToString(exclude = {"cars"})
+@EqualsAndHashCode(of = {"id", "name"})
 @JsonIgnoreProperties({"cars"})
 @Entity
 @Table(name = "engine_vol")

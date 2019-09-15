@@ -8,6 +8,9 @@ import ru.job4j.model.dictionary.Colour;
 import ru.job4j.model.dictionary.Status;
 import ru.job4j.model.dictionary.Year;
 import ru.job4j.model.part.*;
+
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -17,6 +20,17 @@ public class DBStorage extends DBWrapp {
 
     public static DBStorage getInstance() {
         return INSTANCE;
+    }
+
+
+
+    public Car findCarById(final int id) {
+        return super.tx(
+                session -> {
+                    Car car = session.get(Car.class, id);
+                    return car;
+                }
+        );
     }
 
     public List<Car> allCars() {
@@ -30,7 +44,6 @@ public class DBStorage extends DBWrapp {
                 session -> session.createQuery("from MarkCar").list()
         );
     }
-
 
     public List<EngineType> getAllTypeEngine() {
         return super.tx(
@@ -82,14 +95,7 @@ public class DBStorage extends DBWrapp {
     public Car addOrUpdateCar(final Car car) {
         return super.tx(
                 session -> {
-                    if(session.get(Car.class, car.getId()) != null) {
-                        Car updateCar  = session.load(Car.class, car.getId());
-                        updateCar.setStatus(car.getStatus());
-                        session.saveOrUpdate(updateCar);
-                    } else {
-                        car.setStatus(Status.SALES);
-                        session.saveOrUpdate(car);
-                    }
+                    session.saveOrUpdate(car);
                     return car;
                 }
         );
@@ -108,7 +114,7 @@ public class DBStorage extends DBWrapp {
     }
 
 
-    public List<Car> findCar() {
+    public List<Car> findCarByPhoto() {
         return super.tx(
                 session -> {
                     Query query = session.createQuery(
@@ -120,28 +126,31 @@ public class DBStorage extends DBWrapp {
 
 
     public List<Car> getListCarByLastDay() {
+        String hql = "select  c from Car as c "
+                + "  where c.registrationtime > ?1";
         return super.tx(
                 session -> {
-                    List<Car> cars = session
-                            .createNativeQuery("SELECT * FROM cars " +
-                                            " WHERE registration_time > now() - interval '1 day' ",
-                                    Car.class)
-                            .getResultList();
-                    return cars;
+                    LocalDateTime lastDate  = LocalDateTime
+                            .from(LocalDateTime
+                                    .now()).minusDays(1);
+                    Timestamp lastTms = Timestamp.valueOf(lastDate);
+                    Query query = session
+                            .createQuery(hql)
+                            .setParameter(1, lastTms);
+                    return query.list();
                 }
         );
     }
 
 
     public List<Car> findCarByMark(final String mark) {
-        String hql = " select * from cars c"
-                + " inner join  car_mark m on m.id = c.mark_id "
-                + " where m.name = :mark ";
+        String hql = "select  c from Car as c inner join c.markCar m "
+                + "  where m.name = ?1";
         return super.tx(
                 session -> {
-                    Query query = session.createSQLQuery(hql)
-                            .addEntity(Car.class)
-                            .setParameter("mark", mark);
+                    Query query = session
+                            .createQuery(hql)
+                            .setParameter(1, mark);
                     return query.list();
                 }
         );

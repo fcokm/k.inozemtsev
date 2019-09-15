@@ -1,7 +1,9 @@
 package ru.job4j.model.part;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import ru.job4j.model.car.Car;
 
@@ -12,6 +14,8 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
+@ToString(exclude = {"cars"})
+@EqualsAndHashCode(of = {"id", "name"})
 @JsonIgnoreProperties({"cars"})
 @Entity
 @Table(name = "engine_type")
@@ -23,7 +27,7 @@ public class EngineType {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL, mappedBy = "engineType")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "engineType")
     private List<Car>  cars = new ArrayList<>();
 
 }
