@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd"
+       default-lazy-init="true">
+    <context:component-scan base-package="ru"/>
+
+    <bean id="kettle" class="ru.domain.Kettle">
+        <constructor-arg index = "0" value = "Bosh"/>
+        <constructor-arg index = "1" value = "10"/>
+    </bean>
+
+    <bean id="phone" class="ru.domain.Phone">
+        <constructor-arg index = "0" value = "Huawei"/>
+        <constructor-arg index = "1" value = "7000"/>
+    </bean>
+
+    <bean id="pizza" class="ru.domain.Pizza" >
+        <constructor-arg index = "0" value = "Bosh"/>
+        <constructor-arg index = "1" value = "10"/>
+      <property name="size" value="60"/>
+    </bean>
+
+    <bean id="MyXMLApp" class="ru.consumer.XMLApp" >
+        <property name="product" ref="kettle"></property>
+    </bean>
+
+</beans>
