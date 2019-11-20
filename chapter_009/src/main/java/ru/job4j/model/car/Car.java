@@ -1,8 +1,11 @@
 package ru.job4j.model.car;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
@@ -20,6 +23,9 @@ import java.sql.Timestamp;
 
 @Slf4j
 @Data
+@ToString(exclude = {"carBody", "colour", "engineType", "engineVolum", "carCategory"
+        ,"markCar", "carModel","transmission","user"})
+@EqualsAndHashCode(of = {"id", "registrationtime" })
 @NoArgsConstructor
 @JsonIgnoreProperties({"sales", "hibernateLazyInitializer", "handler"})
 @Entity
@@ -38,6 +44,7 @@ public class Car {
 
     @Column(name = "price")
     private BigDecimal price;
+
 
     @ManyToOne
     @JoinColumn(name="body_id", nullable=false)

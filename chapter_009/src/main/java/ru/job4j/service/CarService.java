@@ -32,9 +32,9 @@ public interface CarService {
 
     Car addOrUpdateCar(final Car car);
 
-    List<CarModel> findByMark(final String mark);
+    List<CarModel> findByCarMarkByMark(final String mark);
 
-    List<Car> findCar();
+    List<Car> findCarsByWithPhoto();
 
     List<Car> getListCarByLastDay();
 
