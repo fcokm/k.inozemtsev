@@ -4,6 +4,7 @@ $(document).ready(() => {
         url: '/emp/part',
         type: 'get',
         success: (data) => {
+            console.log('TT', data);
             $.each(data, (key, value) => {
                 apply(value, key);
             });
@@ -58,6 +59,7 @@ $(document).ready(() => {
 
     const apply = (value, key) => {
         let opt = '';
+
         value.forEach((el) => {
             opt += '<option ' + 'id=' + el.id + ' >' + el.name + '</option>';
         });

@@ -1,6 +1,6 @@
 $(document).ready(() => {
     $.ajax({
-        url: '/emp/cars?data=all',
+        url: '/emp/all',
         type: 'get',
         encoding: 'UTF-8',
         success: (data) => {
