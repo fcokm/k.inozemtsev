@@ -5,16 +5,26 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.support.BeanDefinitionDsl;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import ru.job4j.model.Role;
 import ru.job4j.model.User;
 import ru.job4j.model.car.Car;
 import ru.job4j.model.dictionary.Colour;
 import ru.job4j.model.dictionary.Year;
 import ru.job4j.model.part.*;
+import ru.job4j.repository.RoleRepository;
+import ru.job4j.repository.UserRepository;
 import ru.job4j.service.CarService;
 
-import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.security.Principal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,9 +39,11 @@ public class AutoController {
     @Autowired
     public CarService carService;
 
+    @Autowired
+    public UserRepository userRepository;
 
     @Autowired
-    private ServletContext context;
+    public RoleRepository roleRepository;
 
     private Map<String, Function<String, List<Car>>> getCarsMapWithFilter() {
         Map<String, Function<String, List<Car>>> carsMap = new HashMap<>();
@@ -47,6 +59,13 @@ public class AutoController {
         User user = new User();
         user.setId(1);
         return user;
+    }
+
+    @Bean
+    public Role  userRole() {
+        Role role = new Role();
+        role.setId(2);
+        return role;
     }
 
     private Function<String, List<Car>> getListCarsNotPhoto() {
@@ -66,12 +85,46 @@ public class AutoController {
     }
 
     @GetMapping("main")
-    public String getAll() {
+    public String main() {
         return "main";
     }
 
+    @GetMapping("registration")
+    public String registration() {
+        return "registration";
+    }
+
+    @PostMapping("registration")
+    public String addUser(User user, ModelMap model) {
+      User searchUser = userRepository.findByLogin(user.getLogin());
+        if(searchUser != null) {
+            model.addAttribute("message", "User exists");
+            return "registration";
+        }
+             user.setRole(userRole());
+             user.setActive(true);
+             userRepository.save(user);
+        return "redirect:login";
+    }
+
+
+    @GetMapping("logout")
+    public String logoutPage (HttpServletRequest request, HttpServletResponse response) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null){
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
+        return "redirect:/login";
+    }
+
+    @GetMapping("login")
+    public String login() {
+        return "login";
+    }
+
+
     @GetMapping("add")
-    public String getAdd() {
+    public String add() {
         return "add";
     }
 
@@ -91,7 +144,7 @@ public class AutoController {
 
     @GetMapping("all")
     public @ResponseBody
-    Map<String, List<Car>> getAll1() {
+    Map<String, List<Car>> allCar() {
         Map<String, List<Car>> map = new HashMap<>();
         List<Car> cars = carService.allCars();
         map.put("not", cars);
@@ -100,8 +153,9 @@ public class AutoController {
 
 
     @PostMapping(value = "/add", produces = "application/json")
-    public Car addCar(@RequestBody Car car) {
-        car.setUser(getUser());
+    public Car addCar(@RequestBody Car car, Principal principal) {
+        User user =  userRepository.findByLogin(principal.getName());
+        car.setUser(user);
         car.setRegistrationtime(new Timestamp(System.currentTimeMillis()));
         return carService.addOrUpdateCar(car);
     }

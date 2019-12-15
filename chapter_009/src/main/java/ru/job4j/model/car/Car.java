@@ -45,7 +45,6 @@ public class Car {
     @Column(name = "price")
     private BigDecimal price;
 
-
     @ManyToOne
     @JoinColumn(name="body_id", nullable=false)
     private CarBody carBody;

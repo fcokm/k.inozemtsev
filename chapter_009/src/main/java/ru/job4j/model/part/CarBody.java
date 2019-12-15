@@ -21,6 +21,6 @@ import java.util.List;
 @Table(name = "car_body")
 public class CarBody extends AbstactCarSpecific {
     @JsonIgnore
-    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL, mappedBy = "carBody")
+    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL, mappedBy = "carBody")
     private List<Car> cars = new ArrayList<>();
 }

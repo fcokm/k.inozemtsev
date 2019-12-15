@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns:mvc="http://www.springframework.org/schema/mvc"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:p="http://www.springframework.org/schema/p"
        xmlns="http://www.springframework.org/schema/beans"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:jpa="http://www.springframework.org/schema/data/jpa"
@@ -25,8 +24,6 @@
     <mvc:resources mapping="/resources/**" location="/resources/"/>
     <context:property-placeholder location="classpath:application.properties" />
 
-
-    <!-- Activates various annotations to be detected in bean classes e.g: @Autowired -->
     <context:annotation-config />
 
     <bean
@@ -48,21 +45,6 @@
 
 
 
-<!--
-    <bean id="sessionFactory"
-          class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
-        <property name="dataSource" ref="dataSource" />
-        <property name="packagesToScan" value="ru.job4j" />
-        <property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
-                <prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
-            </props>
-        </property>
-    </bean>
-
--->
-
     <bean id = "multipartResolver"
           class = "org.springframework.web.multipart.commons.CommonsMultipartResolver" />
 
@@ -75,24 +57,16 @@
     <context:annotation-config />
 
 
-    <!-- Create default configuration for Hibernate -->
     <bean id="hibernateJpaVendorAdapter"
           class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
 
-    <!-- EntityManagerFactory -->
+
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 
 
         <property name="dataSource" ref="dataSource"/>
         <property name="jpaVendorAdapter" ref="hibernateJpaVendorAdapter"/>
 
- <!--       <property name="jpaVendorAdapter">
-            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-                <property name="generateDdl" value="true" />
-                <property name="showSql" value="true" />
-                <property name="database" value="POSTGRESQL" />
-            </bean>
-        </property>-->
 
         <property name="jpaProperties">
             <props>
@@ -102,23 +76,18 @@
             </props>
         </property>
 
-        <!-- Set base package of your entities -->
         <property name="packagesToScan" value="ru.job4j"/>
-        <!-- Set share cache mode -->
         <property name="sharedCacheMode" value="ENABLE_SELECTIVE"/>
-        <!-- Set validation mode -->
         <property name="validationMode" value="NONE"/>
 
 
     </bean>
 
-    <!-- Configure the transaction manager bean -->
     <bean id="transactionManager"
           class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
 
-    <!-- Enable annotation driven transaction management -->
     <tx:annotation-driven/>
 
 </beans>

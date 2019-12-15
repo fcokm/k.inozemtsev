@@ -16,9 +16,16 @@
     <div class="auto-app" id="au">
         <div class="card-body">
             <h7 class="card-title">Объявления</h7>
+
             <c:if test="${sessionScope.userLogin != null}">
                 <h4 class="card-subtitle mb-2 text-muted"> <c:out value="Hi ${sessionScope.userLogin} !"/>  </h4>
-                <a href="/out" class="card-link">Выйти</a>
+                <a href="<c:url value="/logout" />">Выйти</a>
+            </c:if>
+
+            <c:if test="${pageContext.request.userPrincipal.name != null}">
+                <h4>
+                    Welcome : ${pageContext.request.userPrincipal.name}
+                </h4>
             </c:if>
         </div>
         <ul class="nav nav-tabs">
@@ -26,12 +33,10 @@
                 <a class="nav-link active" data-toggle="tab" href="/WEB-INF/views/main.jsp">На главнаю</a>
             </li>
             <li class="nav-item">
-          <%--      <a class="${sessionScope.userLogin != null ? 'nav-link active' : 'nav-link disabled'}"
-                   href="/?page=add.jsp">Продать</a>--%>
               <a class="nav-link active" data-toggle="tab" href="add">Продать</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="/auth">Вход</a>
+                <a class="nav-link" data-toggle="tab" href="logout">Выйти</a>
             </li>
         </ul>
         <fieldset class="form-group">
